@@ -14,38 +14,24 @@ line-height:1.6;
 <!-- This is Header -->
 
 header{
-    background:red !important;
-    color:white;
-    padding:18px 20px;
-    text-align:center;
+background:linear-gradient(135deg,#2563eb,#1d4ed8);
+color:white;
+padding:25px 20px;
+text-align:center;
 }
 
 header h1{
-    font-size:30px;
-    font-weight:700;
-    margin-bottom:4px;
-    line-height:1.1;
+font-size:34px;
+font-weight:700;
+margin-bottom:5px;
 }
 
 header p{
-    margin-top:0;
-    font-size:15px;
-    opacity:.95;
+margin-top:10px;
+font-size:18px;
+opacity:.95;
 }
-@media (max-width:768px){
 
-    header{
-        padding:15px 15px;
-    }
-
-    header h1{
-        font-size:26px;
-    }
-
-    header p{
-        font-size:14px;
-    }
-}
 <!-- End -->
 <
 nav{
