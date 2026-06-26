@@ -14,7 +14,7 @@ line-height:1.6;
 <!-- This is Header -->
 
 header{
-    background:linear-gradient(135deg,#2563eb,#1d4ed8);
+    background:red !important;
     color:white;
     padding:18px 20px;
     text-align:center;
