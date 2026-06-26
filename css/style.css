@@ -70,9 +70,10 @@ margin-bottom:30px;
 }
 
 .hero h2{
-font-size:36px;
-margin-bottom:15px;
-color:#0f172a;
+    font-size:clamp(1.6rem, 4vw, 2.2rem);
+    margin-bottom:15px;
+    color:#0f172a;
+    line-height:1.2;
 }
 
 .hero button{
@@ -236,4 +237,20 @@ height:65px;
 border-radius:50%;
 background:white;
 padding:4px;
+}
+
+
+@media (max-width:768px){
+
+    .hero{
+        padding:25px 20px;
+    }
+
+    .hero h2{
+        font-size:26px;
+    }
+
+    .hero p{
+        font-size:15px;
+    }
 }
