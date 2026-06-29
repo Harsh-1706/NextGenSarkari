@@ -11,7 +11,7 @@ color:#1e293b;
 line-height:1.6;
 }
 
-<!-- This is Header -->
+/* This is Header */
 
 header{
 background:linear-gradient(135deg,#2563eb,#1d4ed8);
@@ -32,7 +32,7 @@ font-size:18px;
 opacity:.95;
 }
 
-<!-- End -->
+/* End */
 
 nav{
 background:white;
