@@ -1,6 +1,7 @@
 <h2>Admin Panel - NextGen Sarkari</h2>
 
 <h3>Add Job</h3>
+
 <input id="title" placeholder="Job Title">
 <input id="department" placeholder="Department">
 <input id="state" placeholder="State">
@@ -8,7 +9,8 @@
 <input id="description" placeholder="Description">
 <input id="apply_link" placeholder="Apply Link">
 <input id="slug" placeholder="Slug">
-<button onclick="alert('BUTTON CLICKED')">Add</button>
+
+<button onclick="addJob()">Add</button>
 
 <hr>
 
@@ -17,30 +19,39 @@
 
 <script>
 async function addJob() {
-  const form = document.getElementById("jobForm");
-  const data = new FormData(form);
+  const payload = {
+    title: document.getElementById("title").value,
+    department: document.getElementById("department").value,
+    state: document.getElementById("state").value,
+    last_date: document.getElementById("last_date").value,
+    description: document.getElementById("description").value,
+    apply_link: document.getElementById("apply_link").value,
+    slug: document.getElementById("slug").value
+  };
 
-  const payload = Object.fromEntries(data.entries());
+  console.log("SENDING:", payload);
 
   const res = await fetch("/api/add-job", {
     method: "POST",
-    body: JSON.stringify(payload),
-    headers: {
-      "Content-Type": "application/json"
-    }
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(payload)
   });
 
   console.log(await res.json());
+
   loadJobs();
 }
+
 async function loadJobs() {
   const res = await fetch("/api/get-jobs");
   const data = await res.json();
 
   document.getElementById("jobs").innerHTML =
     data.map(j =>
-      `<p>${j.title} - ${j.location}
-      <button onclick="deleteJob(${j.id})">Delete</button></p>`
+      `<p>
+        ${j.title} - ${j.state}
+        <button onclick="deleteJob(${j.id})">Delete</button>
+      </p>`
     ).join("");
 }
 
