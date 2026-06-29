@@ -1,0 +1,49 @@
+<h2>Admin Panel - NextGen Sarkari</h2>
+
+<h3>Add Job</h3>
+<input id="title" placeholder="Job Title">
+<input id="location" placeholder="Location">
+<button onclick="addJob()">Add</button>
+
+<hr>
+
+<h3>Jobs</h3>
+<div id="jobs"></div>
+
+<script>
+async function addJob() {
+  await fetch("/api/add-job", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      title: document.getElementById("title").value,
+      location: document.getElementById("location").value
+    })
+  });
+
+  loadJobs();
+}
+
+async function loadJobs() {
+  const res = await fetch("/api/get-jobs");
+  const data = await res.json();
+
+  document.getElementById("jobs").innerHTML =
+    data.map(j =>
+      `<p>${j.title} - ${j.location}
+      <button onclick="deleteJob(${j.id})">Delete</button></p>`
+    ).join("");
+}
+
+async function deleteJob(id) {
+  await fetch("/api/delete-job", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ id })
+  });
+
+  loadJobs();
+}
+
+loadJobs();
+</script>
