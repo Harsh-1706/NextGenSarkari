@@ -2,7 +2,12 @@
 
 <h3>Add Job</h3>
 <input id="title" placeholder="Job Title">
-<input id="location" placeholder="Location">
+<input id="department" placeholder="Department">
+<input id="state" placeholder="State">
+<input id="last_date" placeholder="Last Date">
+<input id="description" placeholder="Description">
+<input id="apply_link" placeholder="Apply Link">
+<input id="slug" placeholder="Slug">
 <button onclick="addJob()">Add</button>
 
 <hr>
@@ -16,10 +21,14 @@ async function addJob() {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
-      title: document.getElementById("title").value,
-      location: document.getElementById("location").value
-    })
-  });
+  title: document.getElementById("title").value,
+  department: document.getElementById("department").value,
+  state: document.getElementById("state").value,
+  last_date: document.getElementById("last_date").value,
+  description: document.getElementById("description").value,
+  apply_link: document.getElementById("apply_link").value,
+  slug: document.getElementById("slug").value
+})
 
   loadJobs();
 }
