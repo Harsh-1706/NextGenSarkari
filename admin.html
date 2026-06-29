@@ -17,18 +17,25 @@
 
 <script>
 async function addJob() {
+  const body = {
+    title: document.getElementById("title").value,
+    department: document.getElementById("department").value,
+    state: document.getElementById("state").value,
+    last_date: document.getElementById("last_date").value,
+    description: document.getElementById("description").value,
+    apply_link: document.getElementById("apply_link").value,
+    slug: document.getElementById("slug").value
+  };
+
+  console.log("Sending:", body);
+
   await fetch("/api/add-job", {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-  title: document.getElementById("title").value,
-  department: document.getElementById("department").value,
-  state: document.getElementById("state").value,
-  last_date: document.getElementById("last_date").value,
-  description: document.getElementById("description").value,
-  apply_link: document.getElementById("apply_link").value,
-  slug: document.getElementById("slug").value
-})
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify(body)
+  });
 
   loadJobs();
 }
