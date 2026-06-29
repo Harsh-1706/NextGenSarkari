@@ -1,11 +1,17 @@
-export async function onRequestPost({ request, env }) {
-  const body = await request.json();
+async function addJob() {
+  const form = document.getElementById("jobForm");
+  const data = new FormData(form);
 
-  await env.DB.prepare(
-    "INSERT INTO jobs (title, location) VALUES (?, ?)"
-  )
-    .bind(body.title, body.location)
-    .run();
+  const payload = Object.fromEntries(data.entries());
 
-  return Response.json({ success: true });
+  const res = await fetch("/api/add-job", {
+    method: "POST",
+    body: JSON.stringify(payload),
+    headers: {
+      "Content-Type": "application/json"
+    }
+  });
+
+  console.log(await res.json());
+  loadJobs();
 }
