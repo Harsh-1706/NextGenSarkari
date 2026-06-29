@@ -29,19 +29,21 @@ async function addJob() {
     slug: document.getElementById("slug").value
   };
 
-  console.log("SENDING:", payload);
+  console.log("SENDING DATA:", payload);
 
   const res = await fetch("/api/add-job", {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
+    headers: {
+      "Content-Type": "application/json"
+    },
     body: JSON.stringify(payload)
   });
 
-  console.log(await res.json());
+  const data = await res.json();
+  console.log("RESPONSE:", data);
 
   loadJobs();
 }
-
 async function loadJobs() {
   const res = await fetch("/api/get-jobs");
   const data = await res.json();
