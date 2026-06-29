@@ -11,7 +11,7 @@ async function addJob() {
 
   console.log("SENDING:", payload);
 
-  const res = await fetch("/api/add-job", {
+  await fetch("/api/add-job", {
     method: "POST",
     headers: {
       "Content-Type": "application/json"
@@ -19,6 +19,5 @@ async function addJob() {
     body: JSON.stringify(payload)
   });
 
-  console.log(await res.json());
   loadJobs();
 }
