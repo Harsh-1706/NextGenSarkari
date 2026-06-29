@@ -258,23 +258,47 @@ grid-template-columns:repeat(2,1fr);
 
 }
 
+/* This is Logo */
+
 .logo-container{
-display:flex;
-align-items:center;
-justify-content:center;
-gap:15px;
-max-width:600px;
-margin:auto;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    gap:20px;
 }
 
 .logo{
-width:65px;
-height:65px;
-border-radius:50%;
-background:white;
-padding:4px;
+    width:70px;
+    height:70px;
+    border-radius:50%;
+    background:white;
+    padding:5px;
 }
 
+.logo-container h1{
+    margin:0;
+    text-align:left;
+}
+
+.logo-container p{
+    margin-top:4px;
+    text-align:left;
+}
+
+@media (max-width:768px){
+
+    .logo-container{
+        flex-direction:column;
+        text-align:center;
+    }
+
+    .logo-container h1,
+    .logo-container p{
+        text-align:center;
+    }
+}
+
+/* Logo End */
 
 @media (max-width:768px){
 
