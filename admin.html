@@ -1,84 +1,249 @@
-<h2>Admin Panel - NextGen Sarkari</h2>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Panel - NextGen Sarkari</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+<header>
+  <div class="logo-container">
+    <img src="logo.png" alt="NextGen Sarkari Logo" class="logo">
+    <div>
+      <h1>NextGen Sarkari</h1>
+      <p>Admin Panel</p>
+    </div>
+  </div>
+</header>
 
-<h3>Add Job</h3>
+<nav>
+  <a href="index.html">🏠 Home</a>
+  <a href="jobs.html">📋 Jobs</a>
+  <a href="admin.html">⚙️ Admin</a>
+</nav>
 
-<input id="title" placeholder="Job Title">
-<input id="department" placeholder="Department">
-<input id="state" placeholder="State">
-<input id="last_date" placeholder="Last Date">
-<input id="description" placeholder="Description">
-<input id="apply_link" placeholder="Apply Link">
-<input id="slug" placeholder="Slug">
+<div class="container admin-container">
+  <div class="admin-card">
+    <h2>Manage Jobs</h2>
+    <p>Use the form below to add a new job to the site.</p>
+    <div class="admin-summary">
+      <div class="summary-card">
+        <span id="jobCount">0</span>
+        <p>Total Jobs</p>
+      </div>
+      <div class="summary-card">
+        <span id="expiringSoon">0</span>
+        <p>Expiring in 7 Days</p>
+      </div>
+    </div>
+    <form id="job-form" class="admin-form">
+      <label for="title">Job Title</label>
+      <input id="title" type="text" placeholder="Job Title" required>
 
-<button onclick="addJob()">Add</button>
+      <div class="field-row">
+        <div>
+          <label for="department">Department</label>
+          <input id="department" type="text" placeholder="Department" required>
+        </div>
+        <div>
+          <label for="state">State</label>
+          <input id="state" type="text" placeholder="State" required>
+        </div>
+      </div>
 
-<hr>
+      <div class="field-row">
+        <div>
+          <label for="last_date">Last Date</label>
+          <input id="last_date" type="date" required>
+        </div>
+        <div>
+          <label for="apply_link">Apply Link</label>
+          <input id="apply_link" type="url" placeholder="https://example.com/apply" required>
+        </div>
+      </div>
 
-<h3>Jobs</h3>
-<div id="jobs"></div>
+      <label for="description">Description</label>
+      <textarea id="description" placeholder="Short description" required></textarea>
+
+      <label for="slug">Slug</label>
+      <input id="slug" type="text" placeholder="Auto-generated from title" required>
+
+      <div class="button-row">
+        <button type="submit" id="submitButton" class="primary-btn">Add Job</button>
+        <div id="loadingIndicator" class="loading-indicator" aria-live="polite"></div>
+      </div>
+      <p id="message" class="admin-message"></p>
+    </form>
+  </div>
+
+  <div class="admin-card">
+    <h2>Existing Jobs</h2>
+    <div id="jobs" class="admin-jobs"></div>
+  </div>
+</div>
 
 <script>
+const jobForm = document.getElementById('job-form');
+const submitButton = document.getElementById('submitButton');
+const loadingIndicator = document.getElementById('loadingIndicator');
+const messageEl = document.getElementById('message');
+const titleInput = document.getElementById('title');
+const slugInput = document.getElementById('slug');
+const jobCountEl = document.getElementById('jobCount');
+const expiringSoonEl = document.getElementById('expiringSoon');
+
+jobForm.addEventListener('submit', async (event) => {
+  event.preventDefault();
+  await addJob();
+});
+
+titleInput.addEventListener('input', updateSlug);
+slugInput.addEventListener('input', () => {
+  slugInput.dataset.touched = 'true';
+});
+
+function updateSlug() {
+  if (slugInput.dataset.touched === 'true') return;
+  const value = titleInput.value.trim().toLowerCase();
+  const slug = value
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/(^-|-$)/g, '');
+  slugInput.value = slug;
+}
+
+function showMessage(text, type) {
+  messageEl.textContent = text;
+  messageEl.className = `admin-message admin-${type}`;
+}
+
+function setLoading(isLoading) {
+  submitButton.disabled = isLoading;
+  loadingIndicator.textContent = isLoading ? 'Processing…' : '';
+}
+
+function resetForm() {
+  jobForm.reset();
+  slugInput.dataset.touched = '';
+}
+
 async function addJob() {
   const payload = {
-    title: document.getElementById("title").value,
-    department: document.getElementById("department").value,
-    state: document.getElementById("state").value,
-    last_date: document.getElementById("last_date").value,
-    description: document.getElementById("description").value,
-    apply_link: document.getElementById("apply_link").value,
-    slug: document.getElementById("slug").value
+    title: titleInput.value.trim(),
+    department: document.getElementById('department').value.trim(),
+    state: document.getElementById('state').value.trim(),
+    last_date: document.getElementById('last_date').value,
+    description: document.getElementById('description').value.trim(),
+    apply_link: document.getElementById('apply_link').value.trim(),
+    slug: slugInput.value.trim()
   };
 
-  console.log("SENDING DATA:", payload);
-
-  const res = await fetch("/api/add-job", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify(payload)
-  });
-
-  const data = await res.json();
-  console.log("RESPONSE:", data);
-
-  if (!res.ok || !data.success) {
-    alert("Failed to add job: " + (data.error || res.statusText));
+  if (!payload.title || !payload.department || !payload.state || !payload.last_date || !payload.description || !payload.apply_link || !payload.slug) {
+    showMessage('Please fill in all fields before adding a job.', 'error');
     return;
   }
 
-  document.getElementById("title").value = "";
-  document.getElementById("department").value = "";
-  document.getElementById("state").value = "";
-  document.getElementById("last_date").value = "";
-  document.getElementById("description").value = "";
-  document.getElementById("apply_link").value = "";
-  document.getElementById("slug").value = "";
+  setLoading(true);
+  try {
+    const res = await fetch('/api/add-job', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    });
 
-  loadJobs();
+    const data = await res.json();
+
+    if (!res.ok || !data.success) {
+      showMessage('Error adding job: ' + (data.error || res.statusText), 'error');
+      return;
+    }
+
+    showMessage('Job added successfully!', 'success');
+    resetForm();
+    loadJobs();
+  } catch (error) {
+    showMessage('Unable to save job. Check your network or API.', 'error');
+  } finally {
+    setLoading(false);
+  }
 }
-async function loadJobs() {
-  const res = await fetch("/api/get-jobs");
-  const data = await res.json();
 
-  document.getElementById("jobs").innerHTML =
-    data.map(j =>
-      `<p>
-        ${j.title} - ${j.state}
-        <button onclick="deleteJob(${j.id})">Delete</button>
-      </p>`
-    ).join("");
+async function loadJobs() {
+  setLoading(true);
+  try {
+    const res = await fetch('/api/get-jobs');
+    const data = await res.json();
+    const jobsEl = document.getElementById('jobs');
+
+    if (!Array.isArray(data)) {
+      jobsEl.innerHTML = '<p class="admin-empty">Unable to load jobs.</p>';
+      jobCountEl.textContent = '0';
+      expiringSoonEl.textContent = '0';
+      return;
+    }
+
+    if (data.length === 0) {
+      jobsEl.innerHTML = '<p class="admin-empty">No jobs found. Add a job to get started.</p>';
+    } else {
+      jobsEl.innerHTML = data.map(job => {
+        const applyUrl = job.apply_link ? job.apply_link : '#';
+        return `
+          <div class="job-row">
+            <div>
+              <strong>${job.title}</strong>
+              <p class="job-meta">${job.department} • ${job.state} • Last Date: ${job.last_date}</p>
+              <p class="job-meta">Slug: ${job.slug}</p>
+              <a href="${applyUrl}" target="_blank" rel="noreferrer noopener">Open apply link</a>
+            </div>
+            <button class="delete-btn" onclick="deleteJob(${job.id})">Delete</button>
+          </div>
+        `;
+      }).join('');
+    }
+
+    jobCountEl.textContent = data.length;
+    const soonCount = data.filter(job => {
+      const date = new Date(job.last_date);
+      const diff = (date - new Date()) / (1000 * 60 * 60 * 24);
+      return diff >= 0 && diff <= 7;
+    }).length;
+    expiringSoonEl.textContent = soonCount;
+  } catch (error) {
+    document.getElementById('jobs').innerHTML = '<p class="admin-empty">Unable to load jobs.</p>';
+    jobCountEl.textContent = '0';
+    expiringSoonEl.textContent = '0';
+  } finally {
+    setLoading(false);
+  }
 }
 
 async function deleteJob(id) {
-  await fetch("/api/delete-job", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ id })
-  });
+  if (!confirm('Delete this job?')) return;
+  setLoading(true);
+  try {
+    const res = await fetch('/api/delete-job', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ id })
+    });
 
-  loadJobs();
+    const data = await res.json();
+    if (!res.ok || !data.success) {
+      showMessage('Unable to delete job.', 'error');
+      return;
+    }
+
+    showMessage('Job deleted successfully.', 'success');
+    loadJobs();
+  } catch (error) {
+    showMessage('Delete failed. Please try again.', 'error');
+  } finally {
+    setLoading(false);
+  }
 }
 
 loadJobs();
 </script>
+</body>
+</html>
