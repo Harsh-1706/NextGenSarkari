@@ -84,27 +84,35 @@
   
  <h2 class="section-title">🔥 Trending Jobs</h2>
 
-<div class="grid">
+<div class="grid" id="trendingJobs"></div>
 
-<div class="card">
-<h3>Punjab Police Recruitment 2026</h3>
-<p>1746 Posts Available</p>
-<p><strong>Last Date:</strong> 10 June 2026</p>
-</div>
+<script>
+async function loadTrendingJobs() {
+  try {
+    const res = await fetch('/api/get-jobs');
+    const jobs = await res.json();
+    const container = document.getElementById('trendingJobs');
 
-<div class="card">
-<h3>District Court Ludhiana Clerk</h3>
-<p>56 Posts Available</p>
-<p><strong>Last Date:</strong> 06 June 2026</p>
-</div>
+    if (!Array.isArray(jobs) || jobs.length === 0) {
+      container.innerHTML = '<p class="admin-empty">No trending jobs yet.</p>';
+      return;
+    }
 
-<div class="card">
-<h3>PSSSB Recruitment</h3>
-<p>Multiple Vacancies</p>
-<p><strong>Apply Online</strong></p>
-</div>
+    const trending = jobs.slice(0, 3);
+    container.innerHTML = trending.map(job => `
+      <div class="card">
+        <h3>${job.title}</h3>
+        <p>${job.department}</p>
+        <p><strong>Last Date:</strong> ${job.last_date}</p>
+      </div>
+    `).join('');
+  } catch (error) {
+    document.getElementById('trendingJobs').innerHTML = '<p class="admin-empty">Unable to load trending jobs.</p>';
+  }
+}
 
-</div>
+loadTrendingJobs();
+</script>
   
 <!-- ===================================== -->
 <!-- LATEST JOBS SECTION -->

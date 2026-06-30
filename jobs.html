@@ -1,19 +1,18 @@
+﻿<!DOCTYPE html>
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Latest Government Jobs - NextGen Sarkari</title>
 <link rel="stylesheet" href="css/jobs.css">
 </head>
-
-
-
+<body>
 <header>
 <div>
 <h1>NextGen Sarkari</h1>
 <p>Fast, Reliable & Accurate Sarkari Job Alerts Across India</p>
 </div>
 </header>
-
 <nav>
 <a href="index.html">🏠 Home</a>
 <a href="jobs.html">📋 Jobs</a>
@@ -23,50 +22,37 @@
 <a href="#">📚 PSSSB Previous Year</a>
 <a href="results.html">📑 Results</a>
 </nav>
-
 <div class="container">
-
 <h2 class="section-title">📋 Latest Government Jobs</h2>
-
-<div class="grid">
-
-<div class="job-card">
-<h3>Punjab Police Constable Recruitment</h3>
-<p>3,298 Constable posts</p>
-<p><strong>Last Date:</strong> 10 June 2026</p>
-<span class="updated">Updated Today</span>
+<div class="grid" id="jobGrid"></div>
 </div>
-
-<a href="punjab-police-constable-recruitment-2026.html" class="job-link">
-<div class="job-card">
-<h3>Punjab Police Recruitment 2026</h3>
-<p>1746 Posts Available</p>
-<p><strong>Last Date:</strong> 10 June 2026</p>
-<span class="updated">Updated Today</span>
-</div>
-</a>
-
-
-
-
-  
-<div class="job-card">
-<h3>District Court Ludhiana Clerk</h3>
-<p>56 Posts Available</p>
-<p><strong>Last Date:</strong> 06 June 2026</p>
-<span class="updated">Updated Today</span>
-</div>
-
-</div>
-
-</div>
-
-<a href="punjab-police-recruitment-2026.html" class="job-link">
-<div class="job-card">
-...
-</div>
-</a>
-
 <footer>
 © 2026 NextGen Sarkari | All Rights Reserved
 </footer>
+<script>
+async function loadJobs() {
+  try {
+    const res = await fetch('/api/get-jobs');
+    const jobs = await res.json();
+    const grid = document.getElementById('jobGrid');
+    if (!Array.isArray(jobs) || jobs.length === 0) {
+      grid.innerHTML = '<p class="admin-empty">No jobs available right now.</p>';
+      return;
+    }
+    grid.innerHTML = jobs.map(job => `
+      <div class="job-card">
+        <h3>${job.title}</h3>
+        <p>${job.department} • ${job.state}</p>
+        <p>${job.description || ''}</p>
+        <p><strong>Last Date:</strong> ${job.last_date}</p>
+        <a href="${job.apply_link}" target="_blank" rel="noreferrer noopener">Apply Link</a>
+      </div>
+    `).join('');
+  } catch (error) {
+    document.getElementById('jobGrid').innerHTML = '<p class="admin-empty">Unable to load jobs. Please try again later.</p>';
+  }
+}
+loadJobs();
+</script>
+</body>
+</html>
