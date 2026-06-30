@@ -1,23 +1,23 @@
-async function addJob() {
-  const payload = {
-    title: document.getElementById("title").value,
-    department: document.getElementById("department").value,
-    state: document.getElementById("state").value,
-    last_date: document.getElementById("last_date").value,
-    description: document.getElementById("description").value,
-    apply_link: document.getElementById("apply_link").value,
-    slug: document.getElementById("slug").value
-  };
+export async function onRequestPost({ request, env }) {
+  const body = await request.json();
+  const { title, department, state, last_date, description, apply_link, slug } = body;
 
-  console.log("SENDING:", payload);
+  if (!title || !department || !state || !last_date || !description || !apply_link || !slug) {
+    return new Response(JSON.stringify({ success: false, error: "Missing required fields." }), {
+      status: 400,
+      headers: { "Content-Type": "application/json" }
+    });
+  }
 
-  await fetch("/api/add-job", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify(payload)
+  const result = await env.DB
+    .prepare(
+      `INSERT INTO jobs (title, department, state, last_date, description, apply_link, slug)
+       VALUES (?, ?, ?, ?, ?, ?, ?)`
+    )
+    .bind(title, department, state, last_date, description, apply_link, slug)
+    .run();
+
+  return new Response(JSON.stringify({ success: true, id: result.lastInsertRowid ?? null }), {
+    headers: { "Content-Type": "application/json" }
   });
-
-  loadJobs();
 }

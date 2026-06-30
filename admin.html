@@ -42,6 +42,19 @@ async function addJob() {
   const data = await res.json();
   console.log("RESPONSE:", data);
 
+  if (!res.ok || !data.success) {
+    alert("Failed to add job: " + (data.error || res.statusText));
+    return;
+  }
+
+  document.getElementById("title").value = "";
+  document.getElementById("department").value = "";
+  document.getElementById("state").value = "";
+  document.getElementById("last_date").value = "";
+  document.getElementById("description").value = "";
+  document.getElementById("apply_link").value = "";
+  document.getElementById("slug").value = "";
+
   loadJobs();
 }
 async function loadJobs() {
