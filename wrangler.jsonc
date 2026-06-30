@@ -8,6 +8,24 @@
   "assets": {
     "directory": "."
   },
+  "functions": {
+    "directory": "functions"
+  },
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "NEXTGEN_SARKARI"
+    }
+  ],
+  "r2_buckets": [
+    {
+      "binding": "R2_PAPERS",
+      "bucket_name": "nextgensarkari-papers"
+    }
+  ],
+  "vars": {
+    "ADMIN_API_TOKEN": "REPLACE_WITH_SECURE_TOKEN"
+  },
   "compatibility_flags": [
     "nodejs_compat"
   ]

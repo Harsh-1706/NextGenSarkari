@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Previous Year Papers - NextGen Sarkari</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<header>
+  <div class="logo-container">
+    <img src="logo.png" alt="NextGen Sarkari Logo" class="logo">
+    <div>
+      <h1>Previous Year Papers</h1>
+      <p>Browse past exam papers by category, organization, and year.</p>
+    </div>
+  </div>
+</header>
+
+<nav>
+  <a href="index.html">🏠 Home</a>
+  <a href="jobs.html">📋 Jobs</a>
+  <a href="previous-papers.html">📚 Previous Papers</a>
+  <a href="admin.html">⚙️ Admin</a>
+</nav>
+
+<div class="container">
+  <div class="papers-header">
+    <div>
+      <h2>Previous Year Papers</h2>
+      <p>Find previous papers for government exams and university tests.</p>
+    </div>
+    <div class="paper-filters">
+      <input id="searchInput" type="text" placeholder="Search by organization, exam, category or year">
+      <select id="categoryFilter">
+        <option value="">All categories</option>
+        <option value="PSSSB">PSSSB</option>
+        <option value="PPSC">PPSC</option>
+        <option value="Punjab Police">Punjab Police</option>
+        <option value="PSPCL">PSPCL</option>
+        <option value="District Courts">District Courts</option>
+        <option value="High Court">High Court</option>
+        <option value="Universities">Universities</option>
+        <option value="Other Exams">Other Exams</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="previous-categories" id="categoryList"></div>
+  <div class="papers-grid" id="papersGrid"></div>
+</div>
+
+<footer>
+  © 2026 NextGen Sarkari | All Rights Reserved
+</footer>
+
+<script>
+const categoryList = document.getElementById('categoryList');
+const papersGrid = document.getElementById('papersGrid');
+const searchInput = document.getElementById('searchInput');
+const categoryFilter = document.getElementById('categoryFilter');
+
+const categories = [
+  { label: 'PSSSB', children: ['Clerk', 'Excise Inspector', 'Patwari', 'Senior Assistant'] },
+  { label: 'Punjab Police', children: ['Constable', 'SI'] },
+  { label: 'District Courts', children: ['Clerk', 'Stenographer'] },
+  { label: 'PPSC', children: [] },
+  { label: 'PSPCL', children: [] },
+  { label: 'Universities', children: [] },
+  { label: 'Other Exams', children: [] }
+];
+
+function renderCategoryList() {
+  categoryList.innerHTML = categories.map(category => `
+    <div class="category-card" data-category="${category.label}">
+      <h3>${category.label}</h3>
+      ${category.children.length ? `<div class="category-tags">${category.children.map(tag => `<span>${tag}</span>`).join('')}</div>` : ''}
+    </div>
+  `).join('');
+}
+
+function createPaperCard(paper) {
+  return `
+    <div class="paper-card">
+      <div class="paper-card-top">
+        <div class="paper-thumb">
+          ${paper.thumbnail_url ? `<img src="${paper.thumbnail_url}" alt="${paper.title}">` : '<div class="paper-placeholder">PDF</div>'}
+        </div>
+        <div>
+          <h3>${paper.title}</h3>
+          <p class="paper-meta">${paper.organization} · ${paper.category} · ${paper.year}</p>
+          <p>${paper.description || 'No description available.'}</p>
+        </div>
+      </div>
+      <div class="paper-card-bottom">
+        <span>${paper.exam_name}</span>
+        <a class="primary-btn" href="${paper.pdf_url}" target="_blank" rel="noreferrer noopener">Download PDF</a>
+      </div>
+    </div>
+  `;
+}
+
+async function loadPapers() {
+  const params = new URLSearchParams();
+  const search = searchInput.value.trim();
+  if (search) params.set('q', search);
+  const category = categoryFilter.value;
+  if (category) params.set('category', category);
+
+  const res = await fetch('/api/get-papers?' + params.toString());
+  const papers = await res.json();
+  papersGrid.innerHTML = Array.isArray(papers) && papers.length
+    ? papers.map(createPaperCard).join('')
+    : '<p class="admin-empty">No papers found.</p>';
+}
+
+categoryList.addEventListener('click', event => {
+  const card = event.target.closest('.category-card');
+  if (!card) return;
+  const category = card.dataset.category;
+  categoryFilter.value = category;
+  loadPapers();
+});
+
+searchInput.addEventListener('input', loadPapers);
+categoryFilter.addEventListener('change', loadPapers);
+
+renderCategoryList();
+loadPapers();
+</script>
+</body>
+</html>
