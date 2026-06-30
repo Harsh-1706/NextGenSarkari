@@ -24,282 +24,85 @@
   <a href="admin.html">⚙️ Admin</a>
 </nav>
 
-<div class="container admin-layout">
-  <aside class="admin-sidebar">
-    <button class="sidebar-link active" data-section="dashboardSection">Dashboard</button>
-    <button class="sidebar-link" data-section="jobsSection">Jobs</button>
-    <button class="sidebar-link" data-section="papersSection">Previous Year Papers</button>
-    <a class="sidebar-link" href="results.html">Results</a>
-    <a class="sidebar-link" href="admit-cards.html">Admit Cards</a>
-    <a class="sidebar-link" href="#">Answer Keys</a>
-    <a class="sidebar-link" href="#">Settings</a>
-  </aside>
+<div class="container admin-container">
+  <div class="admin-card">
+    <h2>Manage Jobs</h2>
+    <p>Use the form below to add a new job to the site.</p>
+    <div class="admin-summary">
+      <div class="summary-card">
+        <span id="jobCount">0</span>
+        <p>Total Jobs</p>
+      </div>
+      <div class="summary-card">
+        <span id="expiringSoon">0</span>
+        <p>Expiring in 7 Days</p>
+      </div>
+    </div>
+    <form id="job-form" class="admin-form">
+      <label for="title">Job Title</label>
+      <input id="title" type="text" placeholder="Job Title" required>
 
-  <main class="admin-main">
-    <section id="dashboardSection" class="admin-card">
-      <h2>Dashboard</h2>
-      <p>Quick overview of jobs and paper inventory.</p>
-      <div class="admin-summary">
-        <div class="summary-card">
-          <span id="dashboardJobs">0</span>
-          <p>Total Jobs</p>
+      <div class="field-row">
+        <div>
+          <label for="department">Department</label>
+          <input id="department" type="text" placeholder="Department" required>
         </div>
-        <div class="summary-card">
-          <span id="dashboardPapers">0</span>
-          <p>Total Papers</p>
-        </div>
-        <div class="summary-card">
-          <span id="dashboardCategories">0</span>
-          <p>Categories</p>
+        <div>
+          <label for="state">State</label>
+          <input id="state" type="text" placeholder="State" required>
         </div>
       </div>
-      <div class="dashboard-welcome card">
-        <h3>Admin actions</h3>
-        <ul>
-          <li>Manage jobs and previous year papers.</li>
-          <li>Use Cloudflare Access or API token to secure operations.</li>
-          <li>Keep the `Previous Year Papers` section up to date.</li>
-        </ul>
-      </div>
-    </section>
 
-    <section id="jobsSection" class="admin-card hidden">
-      <h2>Manage Jobs</h2>
-      <p>Use the form below to add a new job to the site.</p>
-      <div class="admin-summary">
-        <div class="summary-card">
-          <span id="jobCount">0</span>
-          <p>Total Jobs</p>
+      <div class="field-row">
+        <div>
+          <label for="last_date">Last Date</label>
+          <input id="last_date" type="date" required>
         </div>
-        <div class="summary-card">
-          <span id="expiringSoon">0</span>
-          <p>Expiring Soon</p>
+        <div>
+          <label for="apply_link">Apply Link</label>
+          <input id="apply_link" type="url" placeholder="https://example.com/apply" required>
         </div>
       </div>
-      <form id="job-form" class="admin-form">
-        <label for="title">Job Title</label>
-        <input id="title" type="text" placeholder="Job Title" required>
 
-        <div class="field-row">
-          <div>
-            <label for="department">Department</label>
-            <input id="department" type="text" placeholder="Department" required>
-          </div>
-          <div>
-            <label for="state">State</label>
-            <input id="state" type="text" placeholder="State" required>
-          </div>
-        </div>
+      <label for="description">Description</label>
+      <textarea id="description" placeholder="Short description" required></textarea>
 
-        <div class="field-row">
-          <div>
-            <label for="last_date">Last Date</label>
-            <input id="last_date" type="date" required>
-          </div>
-          <div>
-            <label for="apply_link">Apply Link</label>
-            <input id="apply_link" type="url" placeholder="https://example.com/apply" required>
-          </div>
-        </div>
+      <label for="slug">Slug</label>
+      <input id="slug" type="text" placeholder="Auto-generated from title" required>
 
-        <label for="description">Description</label>
-        <textarea id="description" placeholder="Short description" required></textarea>
-
-        <label for="slug">Slug</label>
-        <input id="slug" type="text" placeholder="Auto-generated from title" required>
-
-        <div class="button-row">
-          <button type="submit" id="submitButton" class="primary-btn">Add Job</button>
-          <div id="loadingIndicator" class="loading-indicator" aria-live="polite"></div>
-        </div>
-        <p id="message" class="admin-message"></p>
-      </form>
-
-      <h3>Existing Jobs</h3>
-      <div id="jobs" class="admin-jobs"></div>
-    </section>
-
-    <section id="papersSection" class="admin-card hidden">
-      <h2>Previous Year Papers</h2>
-      <p>Create, edit, and manage your paper library.</p>
-
-      <form id="paper-form" class="admin-form">
-        <input type="hidden" id="paperId">
-        <div class="field-row">
-          <div>
-            <label for="paperTitle">Title</label>
-            <input id="paperTitle" type="text" placeholder="Paper title" required>
-          </div>
-          <div>
-            <label for="organization">Organization</label>
-            <input id="organization" type="text" placeholder="Organization" required>
-          </div>
-        </div>
-
-        <div class="field-row">
-          <div>
-            <label for="examName">Exam Name</label>
-            <input id="examName" type="text" placeholder="Exam name" required>
-          </div>
-          <div>
-            <label for="year">Year</label>
-            <input id="year" type="number" min="1900" max="2099" placeholder="2026" required>
-          </div>
-        </div>
-
-        <div class="field-row">
-          <div>
-            <label for="category">Category</label>
-            <select id="category" required>
-              <option value="">Select category</option>
-              <option value="PSSSB">PSSSB</option>
-              <option value="PPSC">PPSC</option>
-              <option value="Punjab Police">Punjab Police</option>
-              <option value="PSPCL">PSPCL</option>
-              <option value="District Courts">District Courts</option>
-              <option value="High Court">High Court</option>
-              <option value="Universities">Universities</option>
-              <option value="Other Exams">Other Exams</option>
-            </select>
-          </div>
-          <div>
-            <label for="subject">Subject</label>
-            <input id="subject" type="text" placeholder="Subject (optional)">
-          </div>
-        </div>
-
-        <label for="paperDescription">Description</label>
-        <textarea id="paperDescription" placeholder="Description"></textarea>
-
-        <label for="tags">Tags</label>
-        <input id="tags" type="text" placeholder="comma separated tags">
-
-        <div class="field-row">
-          <div>
-            <label for="pdfFile">PDF Upload</label>
-            <input id="pdfFile" type="file" accept="application/pdf" required>
-          </div>
-          <div>
-            <label for="thumbnailFile">Thumbnail</label>
-            <input id="thumbnailFile" type="file" accept="image/*">
-          </div>
-        </div>
-
-        <div class="button-row">
-          <button type="submit" class="primary-btn" id="savePaperBtn">Save Paper</button>
-          <button type="button" class="secondary-btn" id="resetPaperBtn">Reset</button>
-          <div id="paperLoading" class="loading-indicator"></div>
-        </div>
-        <p id="paperMessage" class="admin-message"></p>
-      </form>
-
-      <div class="paper-controls">
-        <input id="searchPapers" type="text" placeholder="Search by name, organization, category or year">
-        <select id="filterCategory">
-          <option value="">All categories</option>
-          <option value="PSSSB">PSSSB</option>
-          <option value="PPSC">PPSC</option>
-          <option value="Punjab Police">Punjab Police</option>
-          <option value="PSPCL">PSPCL</option>
-          <option value="District Courts">District Courts</option>
-          <option value="High Court">High Court</option>
-          <option value="Universities">Universities</option>
-          <option value="Other Exams">Other Exams</option>
-        </select>
+      <div class="button-row">
+        <button type="submit" id="submitButton" class="primary-btn">Add Job</button>
+        <div id="loadingIndicator" class="loading-indicator" aria-live="polite"></div>
       </div>
+      <p id="message" class="admin-message"></p>
+    </form>
+  </div>
 
-      <div id="papers" class="admin-papers"></div>
-    </section>
-  </main>
+  <div class="admin-card">
+    <h2>Existing Jobs</h2>
+    <div id="jobs" class="admin-jobs"></div>
+  </div>
 </div>
 
 <script>
-const sections = document.querySelectorAll('.sidebar-link[data-section]');
-const dashboardJobs = document.getElementById('dashboardJobs');
-const dashboardPapers = document.getElementById('dashboardPapers');
-const dashboardCategories = document.getElementById('dashboardCategories');
 const jobForm = document.getElementById('job-form');
-const paperForm = document.getElementById('paper-form');
-const resetPaperBtn = document.getElementById('resetPaperBtn');
-const paperMessage = document.getElementById('paperMessage');
-const paperLoading = document.getElementById('paperLoading');
-const papersContainer = document.getElementById('papers');
-const searchPapers = document.getElementById('searchPapers');
-const filterCategory = document.getElementById('filterCategory');
-const categorySelect = document.getElementById('category');
-const paperIdInput = document.getElementById('paperId');
-
-const paperFields = {
-  title: document.getElementById('paperTitle'),
-  organization: document.getElementById('organization'),
-  examName: document.getElementById('examName'),
-  year: document.getElementById('year'),
-  category: categorySelect,
-  subject: document.getElementById('subject'),
-  description: document.getElementById('paperDescription'),
-  tags: document.getElementById('tags'),
-  pdfFile: document.getElementById('pdfFile'),
-  thumbnailFile: document.getElementById('thumbnailFile')
-};
-
-const jobSummaryLabel = document.getElementById('jobCount');
-const expiringSoonLabel = document.getElementById('expiringSoon');
+const submitButton = document.getElementById('submitButton');
+const loadingIndicator = document.getElementById('loadingIndicator');
+const messageEl = document.getElementById('message');
 const titleInput = document.getElementById('title');
 const slugInput = document.getElementById('slug');
-const messageEl = document.getElementById('message');
-const loadingIndicator = document.getElementById('loadingIndicator');
-const submitButton = document.getElementById('submitButton');
+const jobCountEl = document.getElementById('jobCount');
+const expiringSoonEl = document.getElementById('expiringSoon');
 
-const state = {
-  papers: []
-};
-
-Array.from(sections).forEach(button => {
-  button.addEventListener('click', () => switchSection(button.dataset.section));
+jobForm.addEventListener('submit', async (event) => {
+  event.preventDefault();
+  await addJob();
 });
 
-function switchSection(sectionId) {
-  document.querySelectorAll('section[id]').forEach(section => {
-    section.classList.toggle('hidden', section.id !== sectionId);
-  });
-  sections.forEach(button => button.classList.toggle('active', button.dataset.section === sectionId));
-}
-
-function showMessage(element, text, type) {
-  element.textContent = text;
-  element.className = `admin-message admin-${type}`;
-}
-
-function setLoading(element, isLoading) {
-  if (isLoading) {
-    element.textContent = 'Processing…';
-  } else {
-    element.textContent = '';
-  }
-}
-
-async function loadDashboard() {
-  try {
-    const [jobsRes, papersRes] = await Promise.all([
-      fetch('/api/get-jobs'),
-      fetch('/api/get-papers')
-    ]);
-    const jobs = await jobsRes.json();
-    const papers = await papersRes.json();
-    dashboardJobs.textContent = Array.isArray(jobs) ? jobs.length : 0;
-    dashboardPapers.textContent = Array.isArray(papers) ? papers.length : 0;
-    dashboardCategories.textContent = 8;
-  } catch (error) {
-    dashboardJobs.textContent = '—';
-    dashboardPapers.textContent = '—';
-    dashboardCategories.textContent = '8';
-  }
-}
-
-function resetJobForm() {
-  jobForm.reset();
-  slugInput.dataset.touched = '';
-}
+titleInput.addEventListener('input', updateSlug);
+slugInput.addEventListener('input', () => {
+  slugInput.dataset.touched = 'true';
+});
 
 function updateSlug() {
   if (slugInput.dataset.touched === 'true') return;
@@ -310,22 +113,20 @@ function updateSlug() {
   slugInput.value = slug;
 }
 
-titleInput.addEventListener('input', updateSlug);
-slugInput.addEventListener('input', () => { slugInput.dataset.touched = 'true'; });
+function showMessage(text, type) {
+  messageEl.textContent = text;
+  messageEl.className = `admin-message admin-${type}`;
+}
 
-jobForm.addEventListener('submit', async (event) => {
-  event.preventDefault();
-  await addJob();
-});
+function setLoading(isLoading) {
+  submitButton.disabled = isLoading;
+  loadingIndicator.textContent = isLoading ? 'Processing…' : '';
+}
 
-paperForm.addEventListener('submit', async (event) => {
-  event.preventDefault();
-  await savePaper();
-});
-
-resetPaperBtn.addEventListener('click', resetPaperForm);
-searchPapers.addEventListener('input', loadPapers);
-filterCategory.addEventListener('change', loadPapers);
+function resetForm() {
+  jobForm.reset();
+  slugInput.dataset.touched = '';
+}
 
 async function addJob() {
   const payload = {
@@ -339,37 +140,37 @@ async function addJob() {
   };
 
   if (!payload.title || !payload.department || !payload.state || !payload.last_date || !payload.description || !payload.apply_link || !payload.slug) {
-    showMessage(messageEl, 'Please fill in all fields before adding a job.', 'error');
+    showMessage('Please fill in all fields before adding a job.', 'error');
     return;
   }
 
-  setLoading(loadingIndicator, true);
-  submitButton.disabled = true;
+  setLoading(true);
   try {
     const res = await fetch('/api/add-job', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(payload)
     });
+
     const data = await res.json();
+
     if (!res.ok || !data.success) {
-      showMessage(messageEl, 'Error adding job: ' + (data.error || res.statusText), 'error');
+      showMessage('Error adding job: ' + (data.error || res.statusText), 'error');
       return;
     }
-    showMessage(messageEl, 'Job added successfully!', 'success');
-    resetJobForm();
-    await loadJobs();
-    await loadDashboard();
+
+    showMessage('Job added successfully!', 'success');
+    resetForm();
+    loadJobs();
   } catch (error) {
-    showMessage(messageEl, 'Unable to save job. Check your network or API.', 'error');
+    showMessage('Unable to save job. Check your network or API.', 'error');
   } finally {
-    setLoading(loadingIndicator, false);
-    submitButton.disabled = false;
+    setLoading(false);
   }
 }
 
 async function loadJobs() {
-  setLoading(loadingIndicator, true);
+  setLoading(true);
   try {
     const res = await fetch('/api/get-jobs');
     const data = await res.json();
@@ -377,10 +178,12 @@ async function loadJobs() {
 
     if (!Array.isArray(data)) {
       jobsEl.innerHTML = '<p class="admin-empty">Unable to load jobs.</p>';
+      jobCountEl.textContent = '0';
+      expiringSoonEl.textContent = '0';
       return;
     }
 
-    if (!data.length) {
+    if (data.length === 0) {
       jobsEl.innerHTML = '<p class="admin-empty">No jobs found. Add a job to get started.</p>';
     } else {
       jobsEl.innerHTML = data.map(job => {
@@ -399,187 +202,48 @@ async function loadJobs() {
       }).join('');
     }
 
-    jobSummaryLabel.textContent = data.length;
-    const soon = data.filter(job => {
+    jobCountEl.textContent = data.length;
+    const soonCount = data.filter(job => {
       const date = new Date(job.last_date);
       const diff = (date - new Date()) / (1000 * 60 * 60 * 24);
       return diff >= 0 && diff <= 7;
     }).length;
-    expiringSoonLabel.textContent = soon;
+    expiringSoonEl.textContent = soonCount;
   } catch (error) {
     document.getElementById('jobs').innerHTML = '<p class="admin-empty">Unable to load jobs.</p>';
+    jobCountEl.textContent = '0';
+    expiringSoonEl.textContent = '0';
   } finally {
-    setLoading(loadingIndicator, false);
+    setLoading(false);
   }
 }
 
-window.deleteJob = async function(id) {
+async function deleteJob(id) {
   if (!confirm('Delete this job?')) return;
-  setLoading(loadingIndicator, true);
+  setLoading(true);
   try {
     const res = await fetch('/api/delete-job', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ id })
     });
+
     const data = await res.json();
     if (!res.ok || !data.success) {
-      showMessage(messageEl, 'Unable to delete job.', 'error');
+      showMessage('Unable to delete job.', 'error');
       return;
     }
-    showMessage(messageEl, 'Job deleted successfully.', 'success');
-    await loadJobs();
-    await loadDashboard();
+
+    showMessage('Job deleted successfully.', 'success');
+    loadJobs();
   } catch (error) {
-    showMessage(messageEl, 'Delete failed. Please try again.', 'error');
+    showMessage('Delete failed. Please try again.', 'error');
   } finally {
-    setLoading(loadingIndicator, false);
-  }
-};
-
-async function savePaper() {
-  const id = paperIdInput.value ? Number(paperIdInput.value) : null;
-  const formData = new FormData();
-  formData.append('title', paperFields.title.value.trim());
-  formData.append('organization', paperFields.organization.value.trim());
-  formData.append('exam_name', paperFields.examName.value.trim());
-  formData.append('category', paperFields.category.value);
-  formData.append('year', paperFields.year.value);
-  formData.append('subject', paperFields.subject.value.trim());
-  formData.append('description', paperFields.description.value.trim());
-  formData.append('tags', paperFields.tags.value.trim());
-
-  if (paperFields.pdfFile.files.length) {
-    formData.append('pdf', paperFields.pdfFile.files[0]);
-  }
-  if (paperFields.thumbnailFile.files.length) {
-    formData.append('thumbnail', paperFields.thumbnailFile.files[0]);
-  }
-
-  if (!paperFields.title.value.trim() || !paperFields.organization.value.trim() || !paperFields.examName.value.trim() || !paperFields.category.value || !paperFields.year.value) {
-    showMessage(paperMessage, 'Please fill in all required fields.', 'error');
-    return;
-  }
-
-  setLoading(paperLoading, true);
-
-  try {
-    const method = id ? 'PUT' : 'POST';
-    if (id) formData.append('id', id);
-    const res = await fetch('/api/' + (id ? 'update-paper' : 'add-paper'), {
-      method,
-      body: formData
-    });
-    const data = await res.json();
-    if (!res.ok || !data.success) {
-      showMessage(paperMessage, 'Error saving paper: ' + (data.error || res.statusText), 'error');
-      return;
-    }
-    showMessage(paperMessage, 'Paper saved successfully!', 'success');
-    resetPaperForm();
-    await loadPapers();
-    await loadDashboard();
-  } catch (error) {
-    showMessage(paperMessage, 'Unable to save paper. Please try again.', 'error');
-  } finally {
-    setLoading(paperLoading, false);
+    setLoading(false);
   }
 }
 
-function resetPaperForm() {
-  paperIdInput.value = '';
-  paperForm.reset();
-  showMessage(paperMessage, '', '');
-}
-
-function formatPaperCard(paper) {
-  return `
-    <div class="paper-row">
-      <div class="paper-card-content">
-        <div class="paper-thumbnail">
-          ${paper.thumbnail_url ? `<img src="${paper.thumbnail_url}" alt="${paper.title}">` : '<div class="paper-placeholder">PDF</div>'}
-        </div>
-        <div class="paper-info">
-          <h3>${paper.title}</h3>
-          <p class="paper-meta">${paper.organization} · ${paper.category} · ${paper.year}</p>
-          <p>${paper.description || 'No description available.'}</p>
-          <p class="paper-tags">${paper.tags ? paper.tags.split(',').map(tag => `<span>${tag}</span>`).join('') : ''}</p>
-        </div>
-      </div>
-      <div class="paper-actions">
-        <a class="secondary-btn" href="${paper.pdf_url}" target="_blank" rel="noreferrer noopener">Download PDF</a>
-        <button class="primary-btn" type="button" onclick="editPaper(${paper.id})">Edit</button>
-        <button class="delete-btn" type="button" onclick="deletePaper(${paper.id})">Delete</button>
-      </div>
-    </div>
-  `;
-}
-
-async function loadPapers() {
-  const params = new URLSearchParams();
-  const q = searchPapers.value.trim();
-  if (q) params.set('q', q);
-  const category = filterCategory.value;
-  if (category) params.set('category', category);
-
-  try {
-    const res = await fetch('/api/get-papers?' + params.toString());
-    const papers = await res.json();
-    state.papers = Array.isArray(papers) ? papers : [];
-    if (!state.papers.length) {
-      papersContainer.innerHTML = '<p class="admin-empty">No papers found.</p>';
-      return;
-    }
-    papersContainer.innerHTML = state.papers.map(formatPaperCard).join('');
-  } catch (error) {
-    papersContainer.innerHTML = '<p class="admin-empty">Unable to load papers.</p>';
-  }
-}
-
-window.editPaper = async function(id) {
-  const paper = state.papers.find(p => p.id === id);
-  if (!paper) return;
-  paperIdInput.value = paper.id;
-  paperFields.title.value = paper.title;
-  paperFields.organization.value = paper.organization;
-  paperFields.examName.value = paper.exam_name;
-  paperFields.year.value = paper.year;
-  paperFields.category.value = paper.category;
-  paperFields.subject.value = paper.subject || '';
-  paperFields.description.value = paper.description || '';
-  paperFields.tags.value = paper.tags || '';
-  showMessage(paperMessage, 'Editing paper. Upload new files only if replacing existing assets.', 'success');
-  switchSection('papersSection');
-};
-
-window.deletePaper = async function(id) {
-  if (!confirm('Delete this paper?')) return;
-  setLoading(paperLoading, true);
-  try {
-    const res = await fetch('/api/delete-paper', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ id })
-    });
-    const data = await res.json();
-    if (!res.ok || !data.success) {
-      showMessage(paperMessage, 'Unable to delete paper.', 'error');
-      return;
-    }
-    showMessage(paperMessage, 'Paper deleted successfully.', 'success');
-    await loadPapers();
-    await loadDashboard();
-  } catch (error) {
-    showMessage(paperMessage, 'Delete failed. Please try again.', 'error');
-  } finally {
-    setLoading(paperLoading, false);
-  }
-};
-
-switchSection('dashboardSection');
-loadDashboard();
 loadJobs();
-loadPapers();
 </script>
 </body>
 </html>
